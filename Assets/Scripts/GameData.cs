@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using GameConstants;
-using UnityEditor;
 using UnityEngine;
-using Random = System.Random;
 
 public class GameData : MonoBehaviour
 {
@@ -53,11 +49,11 @@ public class GameData : MonoBehaviour
         if (str == String.Empty)
         {
             Data = new Data();
-            Data.spaceships = new SpaceshipData[gameConfig.SpaceshipInfos.Length];
+            Data.spaceships = new List<SpaceshipData>();
 
-            foreach (var spaceship in Data.spaceships)
+            for (int i = 0; i < gameConfig.SpaceshipInfos.Length; i++)
             {
-                spaceship.modules = new Dictionary<Vector2Int, ModuleType>();
+                Data.spaceships.Add(new SpaceshipData(new List<ModuleData>()));
             }
         }
         else
@@ -86,12 +82,27 @@ public class GameData : MonoBehaviour
 [Serializable]
 public class Data
 {
-    public SpaceshipData[] spaceships;
+    public List<SpaceshipData> spaceships;
 }
 
 [Serializable]
 public class SpaceshipData
 {
-    public Dictionary<Vector2Int, ModuleType> modules;
+    public SpaceshipData(List<ModuleData> modules)
+    {
+        this.modules = modules;
+    }
+    public List<ModuleData> modules;
+}
+[Serializable]
+public class ModuleData
+{
+    public ModuleData(Vector2Int coordinate, ModuleType type)
+    {
+        this.coordinate = coordinate;
+        moduleType = type;
+    }
+    public Vector2Int coordinate;
+    public ModuleType moduleType;
 }
 
