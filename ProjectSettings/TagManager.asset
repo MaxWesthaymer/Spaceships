@@ -41,6 +41,9 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Background
+    uniqueID: 2684641335
+    locked: 0
   - name: ShipCanvas
     uniqueID: 1500855559
     locked: 0
@@ -48,5 +51,5 @@ TagManager:
     uniqueID: 30482959
     locked: 0
   - name: New Layer
-    uniqueID: 2684641335
+    uniqueID: 341958125
     locked: 0
