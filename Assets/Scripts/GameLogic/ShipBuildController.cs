@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Extensions;
 using GameConstants;
 using UnityEngine;
@@ -7,21 +6,19 @@ using UnityEngine.SceneManagement;
 
 public class ShipBuildController : MonoBehaviour
 {
+    #region InspectorFields
     [SerializeField] private float camBoundsOffset;
-    private GameObject _spaceShipObject;
-    private GameObject _currentObj;
-    private Dictionary<Vector2Int, Cell>  _moduleCells;
-    private int _currentModuleId;
-    private Dictionary<Vector2Int, Cell> _shipCells;
-    [SerializeField]private Dictionary<Vector2Int, Module>  _moduleObjects;
-
-    private void SetupCamera()
-    {
-        Camera cam = Camera.main;
-        var size = _spaceShipObject.GetComponent<BoxCollider2D>().bounds.size;
-        cam.orthographicSize = size.x / (2 * cam.aspect) + camBoundsOffset;
-    }
+    #endregion
     
+    #region PrivateFields
+    private GameObject _spaceShipObject;
+    private GameObject _currentModuleObj;
+    private Dictionary<Vector2Int, Cell>  _moduleCells;
+    private Dictionary<Vector2Int, Cell> _shipCells;
+    private Dictionary<Vector2Int, Module>  _moduleObjects;
+    #endregion
+    
+    #region UnityMethods
     private void Start()
     {
         _spaceShipObject = Instantiate(GameData.Instance.gameConfig.SpaceshipInfos[GameData.Instance.CurrentShip].Prefab, Vector3.zero,
@@ -58,22 +55,23 @@ public class ShipBuildController : MonoBehaviour
             _moduleObjects.Add(module.coordinate, moduleObj.GetComponent<Module>());
         }
     }
+    #endregion
 
-    public void SpawnShipElement(int moduleId)
+    #region PublicMethods
+    public void SpawnShipModule(int moduleId)
     {
-        _currentModuleId = moduleId;
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _currentObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[moduleId].Prefab, mousePosition, Quaternion.identity);
-        _moduleCells = _currentObj.GetComponent<Module>().GetModuleCells();
-        _currentObj.GetComponent<Module>().SetTaken(true);
-        _currentObj.GetComponent<Module>().ModuleType = (ModuleType)moduleId;
+        _currentModuleObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[moduleId].Prefab, mousePosition, Quaternion.identity);
+        _moduleCells = _currentModuleObj.GetComponent<Module>().GetModuleCells();
+        _currentModuleObj.GetComponent<Module>().SetTaken(true);
+        _currentModuleObj.GetComponent<Module>().ModuleType = (ModuleType)moduleId;
 
     }
     
-    public void MoveShipElement()
+    public void MoveShipModule()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        _currentObj.transform.position = mousePosition;
+        _currentModuleObj.transform.position = mousePosition;
 
         foreach (var sipCell in _shipCells)
         {
@@ -95,14 +93,14 @@ public class ShipBuildController : MonoBehaviour
         }
     }
 
-    public void EndDrag()
+    public void ReleaseShipModule()
     {
-        _currentObj.GetComponent<Module>().SetTaken(false);
+        _currentModuleObj.GetComponent<Module>().SetTaken(false);
         Cell cell = null;
         Vector2Int cellCoordinate = new Vector2Int();
         foreach (var shipCell in _shipCells)
         {
-            if (!shipCell.Value.gameObject.Contains(_currentObj.transform.position))
+            if (!shipCell.Value.gameObject.Contains(_currentModuleObj.transform.position))
             {
                 continue;
             }
@@ -116,9 +114,9 @@ public class ShipBuildController : MonoBehaviour
 
         if (cell != null && readyCells.Length == _moduleCells.Count)
         {
-            _currentObj.transform.position = cell.transform.position;
+            _currentModuleObj.transform.position = cell.transform.position;
             
-            _moduleObjects.Add(cellCoordinate, _currentObj.GetComponent<Module>());
+            _moduleObjects.Add(cellCoordinate, _currentModuleObj.GetComponent<Module>());
             Debug.Log(_moduleObjects[cellCoordinate].transform.name);
 
             foreach (var moduleCell in _moduleObjects[cellCoordinate].GetModuleCells())
@@ -130,7 +128,7 @@ public class ShipBuildController : MonoBehaviour
         }
         else
         {
-            Destroy(_currentObj);
+            Destroy(_currentModuleObj);
             Debug.Log("Destroy(_currentObj);");
         }
     }
@@ -147,7 +145,21 @@ public class ShipBuildController : MonoBehaviour
 
         return false;
     }
+    
+    public void SaveBuild()
+    {
+        GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.Clear();
+        foreach (var it in _moduleObjects)
+        {
+            var moduleData = new ModuleData(it.Key,it.Value.ModuleType);
+            GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.Add(moduleData);
+        }
+        GameData.Instance.Save();
+        SceneManager.LoadScene(0);
+    }
+    #endregion
 
+    #region PrivateMethods
     private Cell[] GetReadyCells()
     {
         List<Cell> redyCells = new List<Cell>();
@@ -175,17 +187,11 @@ public class ShipBuildController : MonoBehaviour
         return redyCells.ToArray();
     }
 
-    public void SaveBuild()
+    private void SetupCamera()
     {
-        GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.Clear();
-        foreach (var it in _moduleObjects)
-        {
-            var moduleData = new ModuleData(it.Key,it.Value.ModuleType);
-            GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.Add(moduleData);
-        }
-        GameData.Instance.Save();
-        SceneManager.LoadScene(0);
+        Camera cam = Camera.main;
+        var size = _spaceShipObject.GetComponent<BoxCollider2D>().bounds.size;
+        cam.orthographicSize = size.x / (2 * cam.aspect) + camBoundsOffset;
     }
-    
-    
+    #endregion
 }

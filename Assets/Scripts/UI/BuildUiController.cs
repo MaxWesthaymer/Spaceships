@@ -81,13 +81,13 @@ public class BuildUiController : MonoBehaviour
             moduleUi.SetModule((int)module);
             moduleUi.onBeginDrag += i =>
             {
-                shipBuildController.SpawnShipElement(i);
+                shipBuildController.SpawnShipModule(i);
                 EnablingScroll(false);
             };
-            moduleUi.onDrag += shipBuildController.MoveShipElement;
+            moduleUi.onDrag += shipBuildController.MoveShipModule;
             moduleUi.onEndDrag += () =>
             {
-                shipBuildController.EndDrag();
+                shipBuildController.ReleaseShipModule();
                 EnablingScroll(true);
             };
         }

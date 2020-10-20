@@ -5,10 +5,17 @@ using UnityEngine;
 
 public class GameData : MonoBehaviour
 {
+    #region InspectorFields
+    [SerializeField] public GameConfig gameConfig;
+    #endregion
+    
+    #region Propierties
     public static GameData Instance { get; private set; }
     public Data Data { get; private set; }
     public int CurrentShip { get; private set; }
-    [SerializeField] public GameConfig gameConfig;
+    #endregion
+    
+    #region UnityMethods
     private void Awake()
     {
         if (Instance == null)
@@ -23,13 +30,9 @@ public class GameData : MonoBehaviour
         }
         LoadData();
     }
+    #endregion
 
-    private void SaveData(object obj)
-    {
-        var str = JsonUtility.ToJson(obj);
-        PlayerPrefs.SetString("savingdata", str);
-    }
-    
+    #region PublicMethods
     public void Save()
     {
         SaveData(Data);
@@ -38,6 +41,14 @@ public class GameData : MonoBehaviour
     public void SetCurrentShip(int value)
     {
         CurrentShip = value;
+    }
+    #endregion
+    
+    #region PrivateMethods
+    private void SaveData(object obj)
+    {
+        var str = JsonUtility.ToJson(obj);
+        PlayerPrefs.SetString("savingdata", str);
     }
     
     private void LoadData()
@@ -64,6 +75,7 @@ public class GameData : MonoBehaviour
     {
         Save();
     }
+    #endregion
 }
 
 [Serializable]

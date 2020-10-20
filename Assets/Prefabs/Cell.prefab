@@ -228,9 +228,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 7408169442092457069}
-  coordinate: {x: 0, y: 0}
-  IsEmpty: 0
-  gameObjectOnCell: {fileID: 0}
+  _highlightColor: {r: 1, g: 0.8718471, b: 0.5801887, a: 1}
+  _emptyColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!114 &5201324857062935935
 MonoBehaviour:
   m_ObjectHideFlags: 0
