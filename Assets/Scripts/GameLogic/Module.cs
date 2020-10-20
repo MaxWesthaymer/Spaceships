@@ -13,7 +13,7 @@ public class Module : MonoBehaviour
     #endregion
     
     #region Propierties
-    public ModuleType ModuleType { get; set; }
+    public ModuleType ModuleType { get; private set; }
     #endregion
 
     private void Start()
@@ -44,5 +44,10 @@ public class Module : MonoBehaviour
             it.sortingLayerName = isTaken ? "TakenCell" : "ModuleCell";
         }
         textMeshRenderer.sortingLayerName = isTaken ? "TakenModule" : "Module";
+    }
+    
+    public void SetType(ModuleType type)
+    {
+        ModuleType = type;
     }
 }

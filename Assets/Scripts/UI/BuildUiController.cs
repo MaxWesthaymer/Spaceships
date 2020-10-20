@@ -32,15 +32,12 @@ public class BuildUiController : MonoBehaviour
     private void InstantiateSubCategories(Category category)
     {
         currentCategory = category;
-        Debug.Log(currentCategory.Name);
         elementsContainer.Clear();
         categoryBackBtn.gameObject.SetActive(true);
         foreach (var sub in category.SubCategories)
         {
             var btn = Instantiate(categoryElementPrefab);
-            btn.transform.parent = elementsContainer;
-            btn.transform.localPosition = Vector3.zero;
-            btn.transform.localScale = Vector3.one;
+            SetTransform(btn.transform);
             btn.SetElement(sub.Name);
             btn.GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -57,9 +54,7 @@ public class BuildUiController : MonoBehaviour
         foreach (var it in GameData.Instance.gameConfig.Categories)
         {
             var btn = Instantiate(categoryElementPrefab);
-            btn.transform.parent = elementsContainer;
-            btn.transform.localPosition = Vector3.zero;
-            btn.transform.localScale = Vector3.one;
+            SetTransform(btn.transform);
             btn.SetElement(it.Name);
             btn.GetComponent<Button>().onClick.AddListener(() =>
             {
@@ -75,9 +70,7 @@ public class BuildUiController : MonoBehaviour
         foreach (var module in subCategory.ModuleTypes)
         {
             var moduleUi = Instantiate(moduleUiPrefab);
-            moduleUi.transform.parent = elementsContainer;
-            moduleUi.transform.localPosition = Vector3.zero;
-            moduleUi.transform.localScale = Vector3.one;
+            SetTransform(moduleUi.transform);
             moduleUi.SetModule((int)module);
             moduleUi.onBeginDrag += i =>
             {
@@ -95,6 +88,13 @@ public class BuildUiController : MonoBehaviour
         {
             InstantiateSubCategories(currentCategory);
         });
+    }
+
+    private void SetTransform(Transform transform)
+    {
+        transform.parent = elementsContainer;
+        transform.localPosition = Vector3.zero;
+        transform.localScale = Vector3.one;
     }
 
     private void EnablingScroll(bool value)
