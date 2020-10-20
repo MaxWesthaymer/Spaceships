@@ -83,6 +83,15 @@ public class ShipBuildController : MonoBehaviour
 
         if (cell != null && readyCells.Length == _moduleCells.Count)
         {
+            foreach (var it in readyCells)
+            {
+                if (!it.IsEmpty)
+                {
+                    SetUnderModuleCells(it.moduleOwnerId, _moduleObjects[it.moduleOwnerId].GetModuleCells(), true);
+                    Destroy(_moduleObjects[it.moduleOwnerId].gameObject);
+                    _moduleObjects.Remove(it.moduleOwnerId);
+                }
+            }
             _currentModuleObj.transform.position = cell.transform.position;
             _moduleObjects.Add(cellCoordinate, _currentModuleObj.GetComponent<Module>());
             SetUnderModuleCells(cellCoordinate, _moduleObjects[cellCoordinate].GetModuleCells(), false);
@@ -160,7 +169,6 @@ public class ShipBuildController : MonoBehaviour
             SetUnderModuleCells(module.coordinate, moduleHandler.GetModuleCells(), false);
             
             _moduleObjects.Add(module.coordinate, moduleObj.GetComponent<Module>());
-            
         }
     }
 
@@ -186,12 +194,6 @@ public class ShipBuildController : MonoBehaviour
             {
                 if (shipCell.Value.gameObject.Contains(moduleCell.Value.transform.position))
                 {
-                    if (!shipCell.Value.IsEmpty)
-                    {
-                        SetUnderModuleCells(shipCell.Value.moduleOwnerId, _moduleObjects[shipCell.Value.moduleOwnerId].GetModuleCells(), true);
-                        Destroy(_moduleObjects[shipCell.Value.moduleOwnerId].gameObject);
-                        _moduleObjects.Remove(shipCell.Value.moduleOwnerId);
-                    }
                     readyCells.Add(shipCell.Value);
                     break;
                 }
