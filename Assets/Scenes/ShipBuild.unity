@@ -1955,6 +1955,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8efd6d51cef159429aebcb32141eadc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  camBoundsOffset: 2
 --- !u!1 &2089555546
 GameObject:
   m_ObjectHideFlags: 0

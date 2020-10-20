@@ -17,21 +17,60 @@ MonoBehaviour:
     Name: Ship 1
     Prefab: {fileID: 4114407012650067844, guid: 2c09c462e7637c14584615634224e2e5,
       type: 3}
+  - Icon: {fileID: 21300000, guid: c67dfe2017bda444fa25efe141fe82b4, type: 3}
+    Name: Ship 2
+    Prefab: {fileID: 4114407012650067844, guid: 1eebdb6bfeca4cb4690f40f842fdbec7,
+      type: 3}
+  - Icon: {fileID: 21300000, guid: 0700f19b808a6434cb98a28c501881f2, type: 3}
+    Name: Ship 3
+    Prefab: {fileID: 4114407012650067844, guid: 215fcfccde0a2d8488e674f8dc787439,
+      type: 3}
   ModuleInfos:
   - ModuleType: 0
-    Icon: {fileID: 21300000, guid: 01f0de571031a6144945d0a56b1c0b4d, type: 3}
-    Name: Laser gun
+    Name: Laser Gun
     Prefab: {fileID: 8158801795403307828, guid: 78d2ea551a7f5fd4cb3bd1b9a63a5cf3,
+      type: 3}
+  - ModuleType: 1
+    Name: Minigun
+    Prefab: {fileID: 8158801795403307828, guid: 29fd558acb4fc7243b1103ab1b934227,
+      type: 3}
+  - ModuleType: 2
+    Name: Big gun
+    Prefab: {fileID: 8158801795403307828, guid: d2dbcbe100770eb41a0d09902aa411fb,
+      type: 3}
+  - ModuleType: 3
+    Name: Rocket Launcher
+    Prefab: {fileID: 8158801795403307828, guid: bef09f79cc4654a40a00caf53ab24086,
+      type: 3}
+  - ModuleType: 4
+    Name: Rail Gun
+    Prefab: {fileID: 8158801795403307828, guid: 825649a92918c294cbdf5e7eba3c7d32,
+      type: 3}
+  - ModuleType: 5
+    Name: Mini Laser
+    Prefab: {fileID: 8158801795403307828, guid: 7d08c72295c941040b3edf25429f568a,
+      type: 3}
+  - ModuleType: 6
+    Name: Double Gun
+    Prefab: {fileID: 8158801795403307828, guid: 5a614be6222e09743b0c5ec26ef9ab29,
+      type: 3}
+  - ModuleType: 7
+    Name: Long Gun
+    Prefab: {fileID: 8158801795403307828, guid: 5dc0dbbf80bd0364ea84c301e20a2bb2,
+      type: 3}
+  - ModuleType: 8
+    Name: Auto Gun
+    Prefab: {fileID: 8158801795403307828, guid: bd5a6db3b4a510e4b9aa5ff569c1ff09,
       type: 3}
   Categories:
   - Name: Weapon
     SubCategories:
     - Name: Bullet
-      ModuleTypes: 0100000002000000
+      ModuleTypes: 0100000002000000060000000700000008000000
     - Name: Laser
-      ModuleTypes: 00000000
+      ModuleTypes: 000000000400000005000000
     - Name: Rocket
-      ModuleTypes: 
+      ModuleTypes: 03000000
   - Name: Armor
     SubCategories:
     - Name: Shields

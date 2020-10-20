@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class ShipBuildController : MonoBehaviour
 {
-    [SerializeField] private Vector2 camBoundsOffset;
+    [SerializeField] private float camBoundsOffset;
     private GameObject _spaceShipObject;
     private GameObject _currentObj;
     private Dictionary<Vector2Int, Cell>  _moduleCells;
@@ -18,14 +18,8 @@ public class ShipBuildController : MonoBehaviour
     private void SetupCamera()
     {
         Camera cam = Camera.main;
-
         var size = _spaceShipObject.GetComponent<BoxCollider2D>().bounds.size;
-
-        if (size.y > size.x)
-        {
-            cam.orthographicSize = size.y / 2 + camBoundsOffset.y;
-        }
-        cam.orthographicSize = size.x / (2 * cam.aspect) + camBoundsOffset.x;
+        cam.orthographicSize = size.x / (2 * cam.aspect) + camBoundsOffset;
     }
     
     private void Start()
@@ -45,7 +39,7 @@ public class ShipBuildController : MonoBehaviour
         foreach (var it in allCells)
         {
             var cellPosition = it.transform.position;
-            _shipCells.Add(new Vector2Int((int)cellPosition.x, (int)cellPosition.y), it);
+            _shipCells.Add(new Vector2Int(Mathf.RoundToInt(cellPosition.x), Mathf.RoundToInt(cellPosition.y)), it);
         }
         
         _moduleObjects = new Dictionary<Vector2Int, Module>();
@@ -54,11 +48,12 @@ public class ShipBuildController : MonoBehaviour
         {
             var moduleObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[(int)module.moduleType].Prefab, 
                 new Vector3(module.coordinate.x, module.coordinate.y, 0), Quaternion.identity);
-            
+            moduleObj.GetComponent<Module>().ModuleType = module.moduleType;
             foreach (var moduleCell in moduleObj.GetComponent<Module>().GetModuleCells())
             {
                 var coordinate = module.coordinate + moduleCell.Key;
                 _shipCells[coordinate].IsEmpty = false;
+                _shipCells[coordinate].moduleOwnerId = module.coordinate;
             }
             _moduleObjects.Add(module.coordinate, moduleObj.GetComponent<Module>());
         }
@@ -142,15 +137,6 @@ public class ShipBuildController : MonoBehaviour
 
     public bool HasEmptyCells()
     {
-        int i = 0;
-        foreach (var it in _shipCells)
-        {
-            if (it.Value.IsEmpty)
-            {
-                i++;
-            }
-        }
-        Debug.Log("EMPTY " + i);
         foreach (var it in _shipCells)
         {
             if (it.Value.IsEmpty)
@@ -197,6 +183,7 @@ public class ShipBuildController : MonoBehaviour
             var moduleData = new ModuleData(it.Key,it.Value.ModuleType);
             GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.Add(moduleData);
         }
+        GameData.Instance.Save();
         SceneManager.LoadScene(0);
     }
     

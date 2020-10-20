@@ -1,13 +1,20 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using GameConstants;
 using UnityEngine;
 
 public class Module : MonoBehaviour
 {
+    #region InspectorFields
     [SerializeField]private MeshRenderer textMeshRenderer;
+    #endregion
+    
+    #region PrivateFields
     private bool _isTaken;
+    #endregion
+    
+    #region Propierties
     public ModuleType ModuleType { get; set; }
+    #endregion
 
     private void Start()
     {
@@ -22,7 +29,7 @@ public class Module : MonoBehaviour
         foreach (var it in allCells)
         {
             var cellPosition = it.transform.localPosition;
-            moduleCells.Add(new Vector2Int((int)cellPosition.x, (int)cellPosition.y), it);
+            moduleCells.Add(new Vector2Int(Mathf.RoundToInt(cellPosition.x), Mathf.RoundToInt(cellPosition.y)), it);
         }
         return moduleCells;
     }

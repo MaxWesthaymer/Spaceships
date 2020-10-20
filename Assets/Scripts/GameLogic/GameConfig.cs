@@ -39,15 +39,13 @@ public class SubCategory
 [Serializable]
 public class ModuleInfo
 {
-    public ModuleInfo(ModuleType moduleType,Sprite icon, string name, GameObject prefab)
+    public ModuleInfo(ModuleType moduleType, string name, GameObject prefab)
     {
         ModuleType = moduleType;
-        Icon = icon;
         Name = name;
         Prefab = prefab;
     }
     public ModuleType ModuleType;
-    public Sprite Icon;
     public string Name;
     public GameObject Prefab;
 }

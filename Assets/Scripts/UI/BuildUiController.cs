@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 public class BuildUiController : MonoBehaviour
 {
+    #region InspectorFields
     [SerializeField] private ShipBuildController shipBuildController;
     [SerializeField] private Transform elementsContainer;
     [SerializeField] private CategoryUI categoryElementPrefab;
@@ -13,12 +14,21 @@ public class BuildUiController : MonoBehaviour
     [SerializeField] private Button confirmBtn;
     [SerializeField] private GameObject exitWindow;
     [SerializeField] private Button windowBackBtn;
+    #endregion
+    
+    #region PrivateFields
     private Category currentCategory;
+    #endregion
+
+    #region UnityMethods
     private void Start()
     {
         InstantiateCategories();
         confirmBtn.onClick.AddListener(ConfirmBuild);
     }
+    #endregion
+
+    #region PrivateMethods
     private void InstantiateSubCategories(Category category)
     {
         currentCategory = category;
@@ -98,14 +108,15 @@ public class BuildUiController : MonoBehaviour
 
     private void ConfirmBuild()
     {
-        //if (shipBuildController.HasEmptyCells())
-        //{
-        //    exitWindow.SetActive(true);
-        //    windowBackBtn.onClick.AddListener(() => {exitWindow.SetActive(false);});
-        //}
-        //else
-        //{
-            shipBuildController.SaveBuild();
-        //}
+        if (shipBuildController.HasEmptyCells())
+        {
+            exitWindow.SetActive(true);
+            windowBackBtn.onClick.AddListener(() => {exitWindow.SetActive(false);});
+        }
+        else
+        {
+          shipBuildController.SaveBuild();
+        }
     }
+    #endregion
 }

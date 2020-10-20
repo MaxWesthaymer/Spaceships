@@ -9,9 +9,8 @@ public class GameData : MonoBehaviour
     public Data Data { get; private set; }
     public int CurrentShip { get; private set; }
     [SerializeField] public GameConfig gameConfig;
-    void Awake()
+    private void Awake()
     {
-        //Unity singleton 
         if (Instance == null)
         {
             Instance = this;
@@ -28,7 +27,6 @@ public class GameData : MonoBehaviour
     private void SaveData(object obj)
     {
         var str = JsonUtility.ToJson(obj);
-        Debug.Log(str);
         PlayerPrefs.SetString("savingdata", str);
     }
     
@@ -44,7 +42,6 @@ public class GameData : MonoBehaviour
     
     private void LoadData()
     {
-        Debug.Log("Loading");
         var str = PlayerPrefs.GetString("savingdata");
         if (str == String.Empty)
         {
@@ -66,16 +63,6 @@ public class GameData : MonoBehaviour
     private void OnApplicationQuit()
     {
         Save();
-    }
-    private void OnApplicationPause()
-    {
-        Save();
-    }
-
-    private void OnApplicationFocus(bool hasFocus)
-    {
-        if(!hasFocus)
-            Save();
     }
 }
 
