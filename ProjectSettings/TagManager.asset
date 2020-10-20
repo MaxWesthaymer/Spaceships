@@ -44,12 +44,24 @@ TagManager:
   - name: Background
     uniqueID: 2684641335
     locked: 0
+  - name: SpaceShip
+    uniqueID: 341958125
+    locked: 0
+  - name: Cell
+    uniqueID: 30482959
+    locked: 0
+  - name: ModuleCell
+    uniqueID: 989584967
+    locked: 0
+  - name: Module
+    uniqueID: 3839513063
+    locked: 0
   - name: ShipCanvas
     uniqueID: 1500855559
     locked: 0
-  - name: Element
-    uniqueID: 30482959
+  - name: TakenCell
+    uniqueID: 2662723421
     locked: 0
-  - name: New Layer
-    uniqueID: 341958125
+  - name: TakenModule
+    uniqueID: 4229410887
     locked: 0

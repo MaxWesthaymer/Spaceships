@@ -201,8 +201,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 30482959
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 258dc8d32f0fb4b44843f3beb706bd90, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
@@ -230,6 +230,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 7408169442092457069}
   coordinate: {x: 0, y: 0}
   IsEmpty: 0
+  gameObjectOnCell: {fileID: 0}
 --- !u!114 &5201324857062935935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -335,8 +336,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 30482959
+  m_SortingLayer: 3
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 258dc8d32f0fb4b44843f3beb706bd90, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

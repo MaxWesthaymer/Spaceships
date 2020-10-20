@@ -3,132 +3,178 @@ using System.Collections.Generic;
 using Extensions;
 using GameConstants;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class ShipBuildController : MonoBehaviour
 {
+    [SerializeField] private Vector2 camBoundsOffset;
     private GameObject _spaceShipObject;
+    private GameObject _currentObj;
+    private Dictionary<Vector2Int, Cell>  _moduleCells;
+    private int _currentModuleId;
+    private Dictionary<Vector2Int, Cell> _shipCells;
+    [SerializeField]private List<ModuleData> _shipModules;
+    [SerializeField]private Dictionary<Vector2Int, Module>  _moduleObjects;
+
+    private void SetupCamera()
+    {
+        Camera cam = Camera.main;
+
+        var size = _spaceShipObject.GetComponent<BoxCollider2D>().bounds.size;
+
+        if (size.y > size.x)
+        {
+            cam.orthographicSize = size.y / 2 + camBoundsOffset.y;
+        }
+        cam.orthographicSize = size.x / (2 * cam.aspect) + camBoundsOffset.x;
+    }
     
-    private GameObject currentObj;
-    private Cell[] allCells;
-    private Cell[] elementCells;
-    private Cell highlightedCell;
-    private int currentModuleId;
-    [SerializeField] private Dictionary<Vector2Int, Cell> shipCells;
-    void Start()
+    private void Start()
     {
         _spaceShipObject = Instantiate(GameData.Instance.gameConfig.SpaceshipInfos[GameData.Instance.CurrentShip].Prefab, Vector3.zero,
             Quaternion.identity);
-        allCells = _spaceShipObject.GetComponentsInChildren<Cell>();
+
+        SetupCamera();
+        var allCells = _spaceShipObject.GetComponentsInChildren<Cell>();
 
         foreach (var cell in allCells)
         {
             cell.IsEmpty = true;
         }
         
-        shipCells = new Dictionary<Vector2Int, Cell>();
+        _shipCells = new Dictionary<Vector2Int, Cell>();
         foreach (var it in allCells)
         {
             var cellPosition = it.transform.position;
-            shipCells.Add(new Vector2Int((int)cellPosition.x, (int)cellPosition.y), it);
+            _shipCells.Add(new Vector2Int((int)cellPosition.x, (int)cellPosition.y), it);
         }
-        Debug.Log(shipCells[new Vector2Int(-1,0)].transform.name);
 
-        foreach (var m in GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules)
+        _shipModules = new List<ModuleData>();
+        _moduleObjects = new Dictionary<Vector2Int, Module>();
+        _shipModules.AddRange(GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules);
+        foreach (var module in _shipModules)
         {
-            var moduleObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[(int)m.moduleType].Prefab, 
-                new Vector3(m.coordinate.x, m.coordinate.y, 0), Quaternion.identity);
-
-            shipCells[m.coordinate].IsEmpty = false;
-
-            foreach (var c in moduleObj.GetComponent<Module>().GetModuleCells())
+            var moduleObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[(int)module.moduleType].Prefab, 
+                new Vector3(module.coordinate.x, module.coordinate.y, 0), Quaternion.identity);
+            
+            foreach (var moduleCell in moduleObj.GetComponent<Module>().GetModuleCells())
             {
-                var coordinate = m.coordinate + c.Key;
-                shipCells[coordinate].IsEmpty = false;
+                var coordinate = module.coordinate + moduleCell.Key;
+                _shipCells[coordinate].IsEmpty = false;
             }
+            _moduleObjects.Add(module.coordinate, moduleObj.GetComponent<Module>());
         }
     }
 
     public void SpawnShipElement(int moduleId)
     {
-        currentModuleId = moduleId;
+        _currentModuleId = moduleId;
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        currentObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[moduleId].Prefab, mousePosition, Quaternion.identity);
-        elementCells = currentObj.GetComponentsInChildren<Cell>();
+        _currentObj = Instantiate(GameData.Instance.gameConfig.ModuleInfos[moduleId].Prefab, mousePosition, Quaternion.identity);
+        _moduleCells = _currentObj.GetComponent<Module>().GetModuleCells();
+        _currentObj.GetComponent<Module>().SetTaken(true);
     }
     
     public void MoveShipElement()
     {
         Vector2 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        currentObj.transform.position = mousePosition;
+        _currentObj.transform.position = mousePosition;
 
-        foreach (var it in allCells)
+        foreach (var sipCell in _shipCells)
         {
-            if (!it.IsEmpty)
+            if (!sipCell.Value.IsEmpty)
             {
                 continue;
             }
             var isHighlighted = false;
 
-            foreach (var elementCell in elementCells)
+            foreach (var moduleCell in _moduleCells)
             {
-                if (it.gameObject.Contains(elementCell.transform.position))
+                if (sipCell.Value.gameObject.Contains(moduleCell.Value.transform.position))
                 {
                     isHighlighted = true;
                     break;
                 }
             }
-            it.SetHighlight(isHighlighted);
+            sipCell.Value.SetHighlight(isHighlighted);
         }
     }
 
     public void EndDrag()
     {
+        _currentObj.GetComponent<Module>().SetTaken(false);
         Cell cell = null;
-        foreach (var it in allCells)
+        Vector2Int cellCoordinate = new Vector2Int();
+        foreach (var shipCell in _shipCells)
         {
-            if (!it.IsEmpty || !it.gameObject.Contains(currentObj.transform.position))
+            if (!shipCell.Value.IsEmpty || !shipCell.Value.gameObject.Contains(_currentObj.transform.position))
             {
                 continue;
             }
-            cell = it;
+            cell = shipCell.Value;
+            cellCoordinate = shipCell.Key;
             break;
         }
 
         var readyCells = GetReadyCells();
 
-        if (cell != null && readyCells.Length == elementCells.Length)
+        if (cell != null && readyCells.Length == _moduleCells.Count)
         {
-            currentObj.transform.position = cell.transform.position;
+            _currentObj.transform.position = cell.transform.position;
 
-            foreach (var redy in readyCells)
+            _shipModules.Add(new ModuleData(cellCoordinate,(ModuleType)_currentModuleId));
+            _moduleObjects.Add(cellCoordinate, _currentObj.GetComponent<Module>());
+            Debug.Log(_moduleObjects[cellCoordinate].transform.name);
+
+            foreach (var moduleCell in _moduleObjects[cellCoordinate].GetModuleCells())
             {
-                redy.IsEmpty = false;
-                redy.gameObjectOnCell = currentObj;
+                var coordinate = cellCoordinate + moduleCell.Key;
+                _shipCells[coordinate].IsEmpty = false;
             }
-
-            SaveToShip();
         }
         else
         {
-            Destroy(currentObj);
+            Destroy(_currentObj);
         }
+    }
+
+    public bool HasEmptyCells()
+    {
+        int i = 0;
+        foreach (var it in _shipCells)
+        {
+            if (it.Value.IsEmpty)
+            {
+                i++;
+            }
+        }
+        Debug.Log("EMPTY " + i);
+        foreach (var it in _shipCells)
+        {
+            if (it.Value.IsEmpty)
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private Cell[] GetReadyCells()
     {
         List<Cell> redyCells = new List<Cell>();
-        foreach (var it in allCells)
+        foreach (var shipCell in _shipCells)
         {
-            if (!it.IsEmpty)
+            if (!shipCell.Value.IsEmpty)
             {
                 continue;
             }
 
-            foreach (var elementCell in elementCells)
+            foreach (var moduleCell in _moduleCells)
             {
-                if (it.gameObject.Contains(elementCell.transform.position))
+                if (shipCell.Value.gameObject.Contains(moduleCell.Value.transform.position))
                 {
-                    redyCells.Add(it);
+                    redyCells.Add(shipCell.Value);
                     break;
                 }
             }
@@ -136,9 +182,12 @@ public class ShipBuildController : MonoBehaviour
         return redyCells.ToArray();
     }
 
-    private void SaveToShip()
+    public void SaveBuild()
     {
-        GameData.Instance.Data.spaceships[ GameData.Instance.CurrentShip].modules.Add(new ModuleData(new Vector2Int(0,0),(ModuleType)currentModuleId));
-        Debug.Log("!!" + GameData.Instance.Data.spaceships[0].modules.Count);
+        GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.Clear();
+        GameData.Instance.Data.spaceships[GameData.Instance.CurrentShip].modules.AddRange(_shipModules);
+        SceneManager.LoadScene(0);
     }
+    
+    
 }

@@ -196,11 +196,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 30482959
-  m_SortingLayer: 1
+  m_SortingLayerID: 989584967
+  m_SortingLayer: 4
   m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 258dc8d32f0fb4b44843f3beb706bd90, type: 3}
-  m_Color: {r: 0.38487893, g: 0.8773585, b: 0.39075, a: 1}
+  m_Color: {r: 0.4, g: 1, b: 0.2, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -223,7 +223,7 @@ GameObject:
   - component: {fileID: 2915946341099126547}
   - component: {fileID: 5789167445326574976}
   m_Layer: 0
-  m_Name: ElementCell
+  m_Name: ModuleCell
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -281,8 +281,8 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 989584967
+  m_SortingLayer: 4
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 258dc8d32f0fb4b44843f3beb706bd90, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
@@ -307,7 +307,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29e438d9acc892745a93c2c356d1aa42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 0}
   coordinate: {x: 0, y: 0}
+  IsEmpty: 0
+  gameObjectOnCell: {fileID: 0}
 --- !u!114 &5789167445326574976
 MonoBehaviour:
   m_ObjectHideFlags: 0

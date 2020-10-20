@@ -12,7 +12,6 @@ public class Cell : MonoBehaviour
     private readonly Color32 _highlightColor = new Color32(236, 200, 106, 255);
     private readonly Color32 _emptyColor = new Color32(142, 168, 236, 255);
     public bool IsEmpty;
-    public GameObject gameObjectOnCell;
 
     public void Initialization(Vector2Int startingCoordinate)
     {
